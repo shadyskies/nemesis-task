@@ -18,8 +18,6 @@ from .serializers import LoginSerializer, MyTokenObtainPairSerializer, UserLogin
 from .forms import UserRegisterForm, UserUpdateForm
 from rest_framework_simplejwt.tokens import RefreshToken
 
-token = ""
-
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
