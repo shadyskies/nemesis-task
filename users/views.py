@@ -1,12 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import update_last_login
-from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
-from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
@@ -14,12 +10,9 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import UserModel
-from .serializers import LoginSerializer, MyTokenObtainPairSerializer, UserLoginSerializer
+from .serializers import LoginSerializer
 from .forms import UserRegisterForm, UserUpdateForm
 from rest_framework_simplejwt.tokens import RefreshToken
-
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
 
 
 class RegisterView(APIView):
@@ -39,25 +32,6 @@ class RegisterView(APIView):
             #     raise res
             form.save()
             return redirect('login')
-
-# class RegisterView(APIView):
-#     permission_classes = (AllowAny,)
-#     # Allow any user (authenticated or not) to hit this endpoint.
-#     template_name = 'users/register.html'
-#     renderer_classes = [TemplateHTMLRenderer]
-#
-#     def get(self, request):
-#         serializer = RegisterUserSerializer()
-#         return Response({'serializer': serializer})
-#
-#     def post(self, request):
-#         serializer = RegisterUserSerializer(data=request.data)
-#         if serializer.is_valid():
-#             user = serializer.save()
-#             if user:
-#                 json = serializer.data
-#                 return redirect('login')
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(APIView):
@@ -112,10 +86,10 @@ class ProfileEditView(APIView):
         if not token:
             raise AuthenticationFailed('Unauthenticated!')
 
-        if key in ['id', 'date_joined', 'last_login', 'is_staff', 'is_superuser','is_admin', 'is_active']:
+        if key in ['id', 'date_joined', 'last_login', 'is_staff', 'is_superuser', 'is_admin', 'is_active']:
             return Response('Cannot edit item', status=status.HTTP_403_FORBIDDEN)
         form = UserUpdateForm()
-        return render(request, 'users/profile-edit.html', {"key":key, "form": form})
+        return render(request, 'users/profile-edit.html', {"key": key, "form": form})
 
     def post(self, request, key):
         form = UserUpdateForm(request.POST)
@@ -134,7 +108,7 @@ class ProfileClearAttr(APIView):
         if not token:
             raise AuthenticationFailed('Unauthenticated!')
 
-        if key in ['id', 'date_joined', 'last_login', 'is_staff', 'is_superuser','is_admin', 'is_active']:
+        if key in ['id', 'date_joined', 'last_login', 'is_staff', 'is_superuser', 'is_admin', 'is_active']:
             return Response('Cannot delete item', status=status.HTTP_403_FORBIDDEN)
         user_obj = UserModel.objects.get(username=request.user)
         setattr(user_obj, f"{key}", "")

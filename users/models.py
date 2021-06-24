@@ -1,7 +1,6 @@
 import datetime
 from django.contrib.auth.models import User, AbstractUser
 from django.db import models
-from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserModel(AbstractUser):
