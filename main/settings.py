@@ -43,8 +43,9 @@ INSTALLED_APPS = [
     # THIRD PARTY
     'rest_framework',
     'crispy_forms',
+    'rest_framework_simplejwt.token_blacklist',
     # OWN
-    'user',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -125,18 +126,10 @@ STATIC_URL = '/static/'
 
 # Rest Framework
 # Permissions:
-# AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-}
+# AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnlyj
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
@@ -150,5 +143,5 @@ SIMPLE_JWT = {
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
 
-AUTH_USER_MODEL = 'user.UserModel'
+AUTH_USER_MODEL = 'users.UserModel'
 django_heroku.settings(locals())
